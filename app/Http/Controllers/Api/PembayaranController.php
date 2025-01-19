@@ -56,10 +56,18 @@ class PembayaranController extends Controller
     {
         try {
             $pembayaran = Pembayaran::with('penghuni', 'rumah')->find($id);
-            if (!$pembayaran) {
-                return $this->generateResponse(false, null, 'Data pembayaran tidak ditemukan', 404);
-            }
-            return $this->generateResponse(true, $pembayaran, 'Data pembayaran berhasil diambil');
+
+            $data = [
+                'id' => $pembayaran->id,
+                'penghuni' => $pembayaran->penghuni->nama_lengkap,
+                'rumah' => $pembayaran->rumah->nomor_rumah,
+                'jenis_iuran' => $pembayaran->jenis_iuran,
+                'jumlah_iuran' => $pembayaran->jumlah_iuran,
+                'periode' => $pembayaran->periode,
+                'status_pembayaran' => $pembayaran->status_pembayaran,
+            ];
+
+            return $this->generateResponse(true, $data, 'Data pembayaran berhasil diambil');
         } catch (\Exception $e) {
             return $this->generateResponse(false, null, $e->getMessage(), 500);
         }

@@ -55,10 +55,20 @@ class RumahController extends Controller
     {
         try {
             $rumah = Rumah::with('historiPenghuni.penghuni')->find($id);
-            if (!$rumah) {
-                return $this->generateResponse(false, null, 'Data rumah tidak ditemukan', 404);
+
+            $data = [];
+
+            foreach ($rumah->historiPenghuni as $item) {
+                $data[] = [
+                    'id' => $item->id,
+                    'penghuni' => $item->penghuni->nama_lengkap,
+                    'tanggal_mulai' => $item->tanggal_mulai,
+                    'tanggal_selesai' => $item->tanggal_selesai,
+                    'status_aktif' => $item->status_aktif,
+                ];
             }
-            return $this->generateResponse(true, $rumah, 'Data histori penghuni berhasil diambil');
+
+            return $this->generateResponse(true, $data, 'Data histori penghuni rumah berhasil diambil');
         } catch (\Exception $e) {
             return $this->generateResponse(false, null, $e->getMessage(), 500);
         }
@@ -73,6 +83,19 @@ class RumahController extends Controller
             }
             $rumah->delete();
             return $this->generateResponse(true, null, 'Data rumah berhasil dihapus');
+        } catch (\Exception $e) {
+            return $this->generateResponse(false, null, $e->getMessage(), 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $rumah = Rumah::find($id);
+            if (!$rumah) {
+                return $this->generateResponse(false, null, 'Data rumah tidak ditemukan', 404);
+            }
+            return $this->generateResponse(true, $rumah, 'Data rumah berhasil diambil');
         } catch (\Exception $e) {
             return $this->generateResponse(false, null, $e->getMessage(), 500);
         }
