@@ -36,4 +36,32 @@ class PengeluaranController extends Controller
             return $this->generateResponse(false, null, $e->getMessage(), 500);
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $pengeluaran = Pengeluaran::find($id);
+            if (!$pengeluaran) {
+                return $this->generateResponse(false, null, 'Data pengeluaran tidak ditemukan', 404);
+            }
+            $pengeluaran->update($request->all());
+            return $this->generateResponse(true, $pengeluaran, 'Data pengeluaran berhasil diubah');
+        } catch (\Exception $e) {
+            return $this->generateResponse(false, null, $e->getMessage(), 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $pengeluaran = Pengeluaran::find($id);
+            if (!$pengeluaran) {
+                return $this->generateResponse(false, null, 'Data pengeluaran tidak ditemukan', 404);
+            }
+            $pengeluaran->delete();
+            return $this->generateResponse(true, null, 'Data pengeluaran berhasil dihapus');
+        } catch (\Exception $e) {
+            return $this->generateResponse(false, null, $e->getMessage(), 500);
+        }
+    }
 }

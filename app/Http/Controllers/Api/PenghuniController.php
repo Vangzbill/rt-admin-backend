@@ -50,4 +50,18 @@ class PenghuniController extends Controller
             return $this->generateResponse(false, null, $e->getMessage(), 500);
         }
     }
+
+    public function destroy($id)
+    {
+        try {
+            $penghuni = Penghuni::find($id);
+            if (!$penghuni) {
+                return $this->generateResponse(false, null, 'Data penghuni tidak ditemukan', 404);
+            }
+            $penghuni->delete();
+            return $this->generateResponse(true, null, 'Data penghuni berhasil dihapus');
+        } catch (\Exception $e) {
+            return $this->generateResponse(false, null, $e->getMessage(), 500);
+        }
+    }
 }

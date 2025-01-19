@@ -63,4 +63,18 @@ class RumahController extends Controller
             return $this->generateResponse(false, null, $e->getMessage(), 500);
         }
     }
+
+    public function destroy($id)
+    {
+        try {
+            $rumah = Rumah::find($id);
+            if (!$rumah) {
+                return $this->generateResponse(false, null, 'Data rumah tidak ditemukan', 404);
+            }
+            $rumah->delete();
+            return $this->generateResponse(true, null, 'Data rumah berhasil dihapus');
+        } catch (\Exception $e) {
+            return $this->generateResponse(false, null, $e->getMessage(), 500);
+        }
+    }
 }
