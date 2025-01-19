@@ -20,7 +20,7 @@ class PenghuniController extends Controller
     public function index()
     {
         try {
-            $penghuni = Penghuni::with('rumah', 'pembayaran')->get();
+            $penghuni = Penghuni::with('historiPenghuni')->get();
             return $this->generateResponse(true, $penghuni, 'Data penghuni berhasil diambil');
         } catch (\Exception $e) {
             return $this->generateResponse(false, null, $e->getMessage(), 500);

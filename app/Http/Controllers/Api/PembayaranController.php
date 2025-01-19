@@ -17,6 +17,31 @@ class PembayaranController extends Controller
         ], $statusCode);
     }
 
+    public function index()
+    {
+        try {
+            $pembayaran = Pembayaran::with('penghuni', 'rumah')->get();
+
+            $data = [];
+
+            foreach ($pembayaran as $item) {
+                $data[] = [
+                    'id' => $item->id,
+                    'penghuni' => $item->penghuni->nama_lengkap,
+                    'rumah' => $item->rumah->nomor_rumah,
+                    'jenis_iuran' => $item->jenis_iuran,
+                    'jumlah_iuran' => $item->jumlah_iuran,
+                    'periode' => $item->periode,
+                    'status_pembayaran' => $item->status_pembayaran,
+                ];
+            }
+
+            return $this->generateResponse(true, $data, 'Data pembayaran berhasil diambil');
+        } catch (\Exception $e) {
+            return $this->generateResponse(false, null, $e->getMessage(), 500);
+        }
+    }
+
     public function store(Request $request)
     {
         try {

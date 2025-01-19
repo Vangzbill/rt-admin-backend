@@ -20,6 +20,27 @@ class LaporanController extends Controller
         ], $statusCode);
     }
 
+    public function dashboard(Request $request)
+    {
+        try {
+            $bulan = $request->input('bulan', date('m'));
+
+            $totalPemasukan = Pembayaran::whereMonth('periode', $bulan)->sum('jumlah_iuran');
+            $totalPengeluaran = Pengeluaran::whereMonth('tanggal', $bulan)->sum('jumlah');
+            $totalSaldo = $totalPemasukan - $totalPengeluaran;
+
+            $data = [
+                'total_pemasukan' => $totalPemasukan,
+                'total_pengeluaran' => $totalPengeluaran,
+                'total_saldo' => $totalSaldo
+            ];
+
+            return $this->generateResponse(true, $data, 'Data dashboard berhasil diambil');
+        } catch (\Exception $e) {
+            return $this->generateResponse(false, null, $e->getMessage(), 500);
+        }
+    }
+
     public function summaryTahunan(Request $request)
     {
         try {
@@ -65,28 +86,17 @@ class LaporanController extends Controller
             $tahun = $request->input('tahun', date('Y'));
             $bulan = $request->input('bulan', date('m'));
 
-            $pemasukan = Pembayaran::select(
-                'periode',
-                'jumlah_iuran'
-            )
-                ->whereYear('periode', $tahun)
-                ->whereMonth('periode', $bulan)
-                ->get();
-
-            $pengeluaran = Pengeluaran::select(
-                'tanggal',
-                'jumlah'
-            )
-                ->whereYear('tanggal', $tahun)
-                ->whereMonth('tanggal', $bulan)
-                ->get();
+            $totalPemasukan = Pembayaran::whereMonth('periode', $bulan)->whereYear('periode', $tahun)->sum('jumlah_iuran');
+            $totalPengeluaran = Pengeluaran::whereMonth('tanggal', $bulan)->whereYear('tanggal', $tahun)->sum('jumlah');
+            $totalSaldo = $totalPemasukan - $totalPengeluaran;
 
             $data = [
-                'pemasukan' => $pemasukan,
-                'pengeluaran' => $pengeluaran
+                'total_pemasukan' => $totalPemasukan,
+                'total_pengeluaran' => $totalPengeluaran,
+                'total_saldo' => $totalSaldo
             ];
 
-            return $this->generateResponse(true, $data, 'Data laporan bulanan berhasil diambil');
+            return $this->generateResponse(true, $data, 'Data dashboard berhasil diambil');
         } catch (\Exception $e) {
             return $this->generateResponse(false, null, $e->getMessage(), 500);
         }
