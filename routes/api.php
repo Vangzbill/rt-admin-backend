@@ -22,7 +22,7 @@ Route::post('penghuni-rumah', [HistoriPenghuni::class, 'store']);
 Route::put('penghuni-rumah/{penghuniRumah}', [HistoriPenghuni::class, 'update']);
 
 Route::apiResource('pembayarans', PembayaranController::class);
-Route::get('pembayarans/rumah/{penghuniRumah}', [PembayaranController::class, 'getHistoryByRumah']);
+Route::get('pembayarans/rumah/{penghuniRumah}', [PembayaranController::class, 'history']);
 
 Route::apiResource('pengeluarans', PengeluaranController::class);
 

@@ -55,17 +55,21 @@ class PembayaranController extends Controller
     public function history($id)
     {
         try {
-            $pembayaran = Pembayaran::with('penghuni', 'rumah')->find($id);
+            $pembayaran = Pembayaran::with('penghuni', 'rumah')->where('id', $id)->get();
 
-            $data = [
-                'id' => $pembayaran->id,
-                'penghuni' => $pembayaran->penghuni->nama_lengkap,
-                'rumah' => $pembayaran->rumah->nomor_rumah,
-                'jenis_iuran' => $pembayaran->jenis_iuran,
-                'jumlah_iuran' => $pembayaran->jumlah_iuran,
-                'periode' => $pembayaran->periode,
-                'status_pembayaran' => $pembayaran->status_pembayaran,
-            ];
+            $data = [];
+
+            foreach ($pembayaran as $item) {
+                $data[] = [
+                    'id' => $item->id,
+                    'penghuni' => $item->penghuni->nama_lengkap,
+                    'rumah' => $item->rumah->nomor_rumah,
+                    'jenis_iuran' => $item->jenis_iuran,
+                    'jumlah_iuran' => $item->jumlah_iuran,
+                    'periode' => $item->periode,
+                    'status_pembayaran' => $item->status_pembayaran,
+                ];
+            }
 
             return $this->generateResponse(true, $data, 'Data pembayaran berhasil diambil');
         } catch (\Exception $e) {
