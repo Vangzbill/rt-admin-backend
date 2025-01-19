@@ -23,18 +23,24 @@
 4. **Start MySQL database:**
     Ensure MySQL is running on your local machine or update the MySQL connection string in the `.env` file.
 
-5. **Run database migrations:**
+5. **Make a folder for image storage and then link it:**
+    ```bash
+    mkdir public/storage
+    php artisan storage:link
+    ```
+
+6. **Run database migrations:**
     ```bash
     php artisan migrate
     ```
 
-6. **Start the application:**
+7. **Start the application:**
     ```bash
     php artisan route:cache
     php artisan serve
     ```
 
-7. **Access the application:**
+8. **Access the application:**
     Open your browser and navigate to `http://localhost:8000`
 
 Your Laravel project should now be up and running.
